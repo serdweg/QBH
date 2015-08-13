@@ -13,7 +13,7 @@ using namespace QBH;
 
 void init();
 
-void terminate(int status);
+void terminate(int status, char *argv[]);
 
 bool OUTPUT;
 

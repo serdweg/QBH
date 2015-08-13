@@ -5,7 +5,7 @@
 /*****************************************************************************/
 void init() {
     /// Output LHEF file.
-    OUTPUT = false;
+    OUTPUT = true;
 
     /// Declare Pythia object.
     pythia = new Pythia();
@@ -35,14 +35,14 @@ void init() {
     sel_events = 0;
 }
 
-void terminate(int status) {
+void terminate(int status, char *argv[]) {
     /// Termination.
     pythia->stat();
   
     if (OUTPUT) {
         (void)lhaPtr->closeLHEF();
         /// Write QBH banner information to QBHfile.lhe
-        qbh->trailer("QBHfile.lhe");
+        qbh->trailer(((string)"QBH").append(argv[5]));
     }
 
     /// Time job exectution.
@@ -83,10 +83,10 @@ void terminate(int status) {
 int main(int argc, char *argv[]) {
     bool status;
 
-    if (argc != 5) {
+    if (argc != 6) {
         std::cerr << "Not the right number of arguments!" << std::endl;
         std::cerr << "Usage:" << std::endl;
-        std::cerr << "./qbh <n_events> <n_extra_dimension> <threshold_mass> <RS_or_DPG>" << std::endl;
+        std::cerr << "./qbh <n_events> <n_extra_dimension> <threshold_mass> <RS_or_PDG> <out_file_name>" << std::endl;
         std::cerr << std::endl;
         std::cerr << "cancelling!" << std::endl;
         return 42;
@@ -131,11 +131,11 @@ int main(int argc, char *argv[]) {
     /// Planck scale definition
     if (strcmp(argv[4], (char*)"RS") == 0) {
         qbh->setPlanckdef(1); /// Definition of the planck scale 1 (= Randall-Sundrum), 2 (= Dimopoulos-Landsberg), 3 (= PDG), else (= Giddings-Thomas definition) (Default = 3)
-    } else if (strcmp(argv[4], (char*)"DPG") == 0) {
+    } else if (strcmp(argv[4], (char*)"PDG") == 0) {
         qbh->setPlanckdef(3);
     } else {
-        std::cerr << "The value for the <RS_or_DPG> parameter is unknown!" << std::endl;
-        std::cerr << "The allowed values are 'RS' and 'DPG'" << std::endl;
+        std::cerr << "The value for the <RS_or_PDG> parameter is unknown!" << std::endl;
+        std::cerr << "The allowed values are 'RS' and 'PDG'" << std::endl;
         std::cerr << "Your value: " << argv[4] << std::endl;
         std::cerr << std::endl;
         std::cerr << "cancelling!" << std::endl;
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
     (void)pythia->readString("Check:history     = on");
     (void)pythia->readString("Check:nErrList    = 10");
 
-    if (OUTPUT) (void)lhaPtr->openLHEF("LHEFfile.lhe");
+    if (OUTPUT) (void)lhaPtr->openLHEF(((string)"LHEF").append(argv[5]));
 
     /// Initialize Pythia object.
     status = pythia->init();
@@ -242,7 +242,7 @@ int main(int argc, char *argv[]) {
         } /// End of event loop.
     }
 
-    terminate(status);
+    terminate(status, argv);
 
     return status;
 }
