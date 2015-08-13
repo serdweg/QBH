@@ -19,7 +19,7 @@ def run_lhe_production_job(parameters):
     print(out)
     print(err)
 
-    p = subprocess.Popen('mv %s %s/%s'%(out_name, Target, out_name),shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
+    p = subprocess.Popen('mv *%s %s'%(out_name, Target),shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT )
     out, err = p.communicate()
     print(out)
     print(err)
@@ -27,11 +27,11 @@ def run_lhe_production_job(parameters):
     print('done with number %i'%number)
 
 paras = [
- [0,100, 1, 500, 'RS', 'QBH_n1_RS_500'],
- [1,100, 2, 500, 'PDG', 'QBH_n2_ADD_500'],
+ [0,100, 1, 500, 'RS', 'QBH_n1_RS_500.lhe'],
+ [1,100, 2, 500, 'PDG', 'QBH_n2_ADD_500.lhe'],
 ]
 
-for item in numbers:
+for item in paras:
     run_lhe_production_job(item)
 
 # pool = multiprocessing.Pool(5)
