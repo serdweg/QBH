@@ -31,15 +31,15 @@ paras = [
  [1,100, 2, 500, 'PDG', 'QBH_n2_ADD_500.lhe'],
 ]
 
-for item in paras:
-    run_lhe_production_job(item)
+# for item in paras:
+    # run_lhe_production_job(item)
 
-# pool = multiprocessing.Pool(5)
-# pool.map_async(run_lhe_production_job, numbers)
-# while True:
-    # time.sleep(1)
-    # if not pool._cache: break
-# pool.close()
-# pool.join()
+pool = multiprocessing.Pool(5)
+pool.map_async(run_lhe_production_job, paras)
+while True:
+    time.sleep(1)
+    if not pool._cache: break
+pool.close()
+pool.join()
 
 print('everything done')
