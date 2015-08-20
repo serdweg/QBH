@@ -60,6 +60,7 @@ target/
 *.data
 *.lhe
 *.root
+*.pdf
 
 # C++ .o files
 *.o
