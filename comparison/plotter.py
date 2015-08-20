@@ -18,6 +18,8 @@ import style_class as sc
 
 from object_plotting import *
 
+from lheanalyzer import *
+
 import ROOT as r
 
 mili = 1e-3
@@ -26,10 +28,9 @@ piko = 1e-12
 
 dim_match = {
  '1':0,
- '2':1,
- '4':2,
- '5':3,
- '6':4
+ '4':1,
+ '5':2,
+ '6':3
 }
 
 def readin_calchep():
@@ -49,6 +50,7 @@ def readin_calchep():
             mass_vector = []
             dim = int(objects[0].split('_')[1].replace('n',''))
             continue
+        if dim == 0: continue
         mass_vector.append([int(objects[0]),float(objects[1])*femto/piko,1.0])
     out_vector.append(mass_vector)
     out_vector.remove([])
@@ -73,7 +75,7 @@ def readin_qbh():
     file_object.close()
     return out_vector
 
-def main():
+def make_xs_plot():
     ####################################################################
     # Individual cross section plots
     ####################################################################
@@ -92,14 +94,14 @@ def main():
         y_vals_qbh_1.append(itemq[1]*itemq[2])
         y_vals_chp_1.append(itemc[1]*itemc[2])
 
-    x_vals_2 =[]
-    y_vals_qbh_2 = []
-    y_vals_chp_2 = []
-
-    for itemc,itemq in zip(calchep_list[dim_match['2']],qbh_list[dim_match['2']]):
-        x_vals_2.append(itemc[0])
-        y_vals_qbh_2.append(itemq[1]*itemq[2])
-        y_vals_chp_2.append(itemc[1]*itemc[2])
+    # x_vals_2 =[]
+    # y_vals_qbh_2 = []
+    # y_vals_chp_2 = []
+# 
+    # for itemc,itemq in zip(calchep_list[dim_match['2']],qbh_list[dim_match['2']]):
+        # x_vals_2.append(itemc[0])
+        # y_vals_qbh_2.append(itemq[1]*itemq[2])
+        # y_vals_chp_2.append(itemc[1]*itemc[2])
 
     x_vals_4 =[]
     y_vals_qbh_4 = []
@@ -132,9 +134,9 @@ def main():
     y_vals_qbh_1 = np.array(y_vals_qbh_1)
     y_vals_chp_1 = np.array(y_vals_chp_1)
 
-    x_vals_2 = np.array(x_vals_2)
-    y_vals_qbh_2 = np.array(y_vals_qbh_2)
-    y_vals_chp_2 = np.array(y_vals_chp_2)
+    # x_vals_2 = np.array(x_vals_2)
+    # y_vals_qbh_2 = np.array(y_vals_qbh_2)
+    # y_vals_chp_2 = np.array(y_vals_chp_2)
 
     x_vals_4 = np.array(x_vals_4)
     y_vals_qbh_4 = np.array(y_vals_qbh_4)
@@ -156,13 +158,13 @@ def main():
         graph_chp_1.SetPoint(i, xx, y2)
         graph_chp_1.SetPointError(i, 0, 0, 0, 0)
 
-    graph_qbh_2 = Graph(x_vals_2.shape[0])
-    graph_chp_2 = Graph(x_vals_2.shape[0])
-    for i, (xx, y1, y2) in enumerate(zip(x_vals_2, y_vals_qbh_2, y_vals_chp_2)):
-        graph_qbh_2.SetPoint(i, xx, y1)
-        graph_qbh_2.SetPointError(i, 0, 0, 0, 0)
-        graph_chp_2.SetPoint(i, xx, y2)
-        graph_chp_2.SetPointError(i, 0, 0, 0, 0)
+    # graph_qbh_2 = Graph(x_vals_2.shape[0])
+    # graph_chp_2 = Graph(x_vals_2.shape[0])
+    # for i, (xx, y1, y2) in enumerate(zip(x_vals_2, y_vals_qbh_2, y_vals_chp_2)):
+        # graph_qbh_2.SetPoint(i, xx, y1)
+        # graph_qbh_2.SetPointError(i, 0, 0, 0, 0)
+        # graph_chp_2.SetPoint(i, xx, y2)
+        # graph_chp_2.SetPointError(i, 0, 0, 0, 0)
 
     graph_qbh_4 = Graph(x_vals_4.shape[0])
     graph_chp_4 = Graph(x_vals_4.shape[0])
@@ -200,17 +202,17 @@ def main():
     graph_chp_1.SetLineColor('red')
     graph_chp_1.SetLineStyle(2)
 
-    graph_qbh_2.SetTitle('n = 2, QBH')
-    graph_qbh_2.xaxis.SetTitle('$M$ (GeV)')
-    graph_qbh_2.yaxis.SetTitle('xs $\cdot$ BR (pb)')
+    # graph_qbh_2.SetTitle('n = 2, QBH')
+    # graph_qbh_2.xaxis.SetTitle('$M$ (GeV)')
+    # graph_qbh_2.yaxis.SetTitle('xs $\cdot$ BR (pb)')
+# 
+    # graph_chp_2.SetTitle('n = 2, CalcHEP')
+    # graph_chp_2.xaxis.SetTitle('$M$ (GeV)')
+    # graph_chp_2.yaxis.SetTitle('xs $\cdot$ BR (pb)')
 
-    graph_chp_2.SetTitle('n = 2, CalcHEP')
-    graph_chp_2.xaxis.SetTitle('$M$ (GeV)')
-    graph_chp_2.yaxis.SetTitle('xs $\cdot$ BR (pb)')
-
-    graph_qbh_2.SetLineColor('blue')
-    graph_chp_2.SetLineColor('blue')
-    graph_chp_2.SetLineStyle(2)
+    # graph_qbh_2.SetLineColor('blue')
+    # graph_chp_2.SetLineColor('blue')
+    # graph_chp_2.SetLineStyle(2)
 
     graph_qbh_4.SetTitle('n = 4, QBH')
     graph_qbh_4.xaxis.SetTitle('$M$ (GeV)')
@@ -254,7 +256,7 @@ def main():
  
     # hist_style.Set_axis(logy = True, grid = True, xmin = 200, xmax = 2000, histaxis_ymin = 1.0, histaxis_ymax = 1.5)
 
-    test = plotter(hist = [graph_qbh_1, graph_chp_1,graph_qbh_2, graph_chp_2,graph_qbh_4, graph_chp_4,graph_qbh_5, graph_chp_5,graph_qbh_6, graph_chp_6], style=hist_style)
+    test = plotter(hist = [graph_qbh_1, graph_chp_1,graph_qbh_4, graph_chp_4,graph_qbh_5, graph_chp_5,graph_qbh_6, graph_chp_6], style=hist_style)
 
     # test = plotter(hist = [graph_qbh_1, graph_chp_1], style=hist_style)
 
@@ -262,6 +264,141 @@ def main():
     test.create_plot()
 
     test.SavePlot('xs_comparison.pdf')
+
+def create_histos(filename):
+    lhe_file = LHEAnalysis(filename)
+    print('analyzing file %s'%filename)
+    for item in lhe_file.processes:
+        print('process:')
+        print(item.id)
+        print('cross section:')
+        print(str(item.crossSection) + ' +- ' + str(item.crossSectionUncertainty))
+    print(' ')
+
+    ele_hist_pT = Hist(3000, 0, 6000, name = 'ele_hist_pT')
+    ele_hist_phi = Hist(65, -3.5, 3.5, name = 'ele_hist_phi')
+    ele_hist_eta = Hist(100, -5, 5, name = 'ele_hist_eta')
+
+    muo_hist_pT = Hist(3000, 0, 6000, name = 'muo_hist_pT')
+    muo_hist_phi = Hist(65, -3.5, 3.5, name = 'muo_hist_phi')
+    muo_hist_eta = Hist(100, -5, 5, name = 'muo_hist_eta')
+
+    emu_hist_mass = Hist(3000, 0, 6000, name = 'emu_hist_mass')
+
+    while(True):
+        try:
+            event = lhe_file.next()
+        except(StopIteration):
+            break
+
+        electron = r.TLorentzVector()
+        muon = r.TLorentzVector()
+        qbh = r.TLorentzVector()
+        for part in event.particles:
+            if(abs(part.pdgId) == 11):
+                ele_hist_pT.Fill(part.pt)
+                ele_hist_phi.Fill(part.phi)
+                ele_hist_eta.Fill(part.eta)
+                electron.SetPtEtaPhiM(part.pt,part.phi,part.eta,part.mass)
+
+            if(abs(part.pdgId) == 13):
+                muo_hist_pT.Fill(part.pt)
+                muo_hist_phi.Fill(part.phi)
+                muo_hist_eta.Fill(part.eta)
+                muon.SetPtEtaPhiM(part.pt,part.phi,part.eta,part.mass)
+
+        qbh = electron + muon
+        emu_hist_mass.Fill(qbh.M())
+
+    ele_hist_pT.Scale(1./ele_hist_pT.Integral())
+    ele_hist_phi.Scale(1./ele_hist_phi.Integral())
+    ele_hist_eta.Scale(1./ele_hist_eta.Integral())
+
+    muo_hist_pT.Scale(1./muo_hist_pT.Integral())
+    muo_hist_phi.Scale(1./muo_hist_phi.Integral())
+    muo_hist_eta.Scale(1./muo_hist_eta.Integral())
+
+    emu_hist_mass.Scale(1./emu_hist_mass.Integral())
+
+    ele_hist_pT = Graph(ele_hist_pT)
+    ele_hist_phi = Graph(ele_hist_phi)
+    ele_hist_eta = Graph(ele_hist_eta)
+
+    muo_hist_pT = Graph(muo_hist_pT)
+    muo_hist_phi = Graph(muo_hist_phi)
+    muo_hist_eta = Graph(muo_hist_eta)
+
+    emu_hist_mass = Graph(emu_hist_mass)
+
+    return [ele_hist_pT,ele_hist_phi,ele_hist_eta,muo_hist_pT,muo_hist_phi,muo_hist_eta,emu_hist_mass]
+
+def plot_shape_comparison(n, mass):
+
+    if n == 1:
+        chp_1_500 = create_histos('/net/scratch_cms/institut_3a/13TeV_rpv_LFV_resonances/QBH_emu/CalcHEP_n_%i_RS/QBH_n%i_RS_Mth-MPL%i.lhe'%(n, n, mass))
+        qbh_1_500 = create_histos('/disk1/erdweg/QBH/lhes/LHEFQBH_n%i_RS_%i.lhe'%(n, mass))
+    else:
+        chp_1_500 = create_histos('/net/scratch_cms/institut_3a/13TeV_rpv_LFV_resonances/QBH_emu/CalcHEP_n_%i_PDG/QBH_n%i_ADD_Mth-MPL%i.lhe'%(n, n, mass))
+        qbh_1_500 = create_histos('/disk1/erdweg/QBH/lhes/LHEFQBH_n%i_ADD_%i.lhe'%(n, mass))
+
+    hists = [[0,'ele_pT'], [1,'ele_phi'], [2,'ele_eta'], [3,'muo_pT'], [4,'muo_phi'], [5,'muo_eta'], [6,'emu_mass']]
+
+    for item in hists:
+        hist_style = sc.style_container(style = 'CMS', useRoot = False, kind = 'Linegraphs', cmsPositon = "upper right", legendPosition = 'lower left', lumi = 0, cms = 13)
+
+        hist_style.Set_additional_text('Simulation')
+    
+        # hist_style.Set_axis(logy = True, grid = True, xmin = 200, xmax = 2000, histaxis_ymin = 1.0, histaxis_ymax = 1.5)
+
+        chp_1_500[item[0]].SetLineColor('red')
+        chp_1_500[item[0]].SetTitle('CalcHEP, n = %i, M = %i'%(n, mass))
+        qbh_1_500[item[0]].SetLineColor('green')
+        qbh_1_500[item[0]].SetTitle('QBH, n = %i, M = %i'%(n, mass))
+
+        test = plotter(hist = [chp_1_500[item[0]], qbh_1_500[item[0]]], style=hist_style)
+
+        test.create_plot()
+
+        test.SavePlot(item[1] + '_%i_%i_comparison.pdf'%(n, mass))
+
+def main():
+
+    make_xs_plot()
+    # plot_shape_comparison(1,500)
+    # plot_shape_comparison(1,1000)
+    # plot_shape_comparison(1,1500)
+    # plot_shape_comparison(1,2000)
+    # plot_shape_comparison(1,2500)
+    # plot_shape_comparison(1,3000)
+    # plot_shape_comparison(1,3500)
+    # plot_shape_comparison(1,4000)
+
+    # plot_shape_comparison(4,500)
+    # plot_shape_comparison(4,1000)
+    # plot_shape_comparison(4,1500)
+    # plot_shape_comparison(4,2000)
+    # plot_shape_comparison(4,2500)
+    # plot_shape_comparison(4,3000)
+    # plot_shape_comparison(4,3500)
+    # plot_shape_comparison(4,4000)
+
+    # plot_shape_comparison(5,500)
+    # plot_shape_comparison(5,1000)
+    # plot_shape_comparison(5,1500)
+    # plot_shape_comparison(5,2000)
+    # plot_shape_comparison(5,2500)
+    # plot_shape_comparison(5,3000)
+    # plot_shape_comparison(5,3500)
+    # plot_shape_comparison(5,4000)
+
+    # plot_shape_comparison(6,500)
+    # plot_shape_comparison(6,1000)
+    # plot_shape_comparison(6,1500)
+    # plot_shape_comparison(6,2000)
+    # plot_shape_comparison(6,2500)
+    # plot_shape_comparison(6,3000)
+    # plot_shape_comparison(6,3500)
+    # plot_shape_comparison(6,4000)
 
     return 42
 
