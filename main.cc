@@ -75,6 +75,12 @@ void terminate(int status, char *argv[]) {
     HistClass::Write("mass_qbh");
     out_file->Close();
     std::cerr << "done\n";
+
+    /// <n_extra_dimension> <threshold_mass> <RS_or_PDG> <xs> <sigma(xs)> <BR> <out_file_name> <n_events>
+    std::ofstream outfile;
+    outfile.open("info.txt", std::ios_base::app);
+    outfile << atoi(argv[2]) << "\t" << atof(argv[3]) << "\t" << argv[4] << "\t" << pythia->info.sigmaGen() << "\t" << pythia->info.sigmaErr() << "\t" << (double)sel_events/(double)all_events << "\t" << argv[5] << "\t" << atoi(argv[1]) << std::endl;
+    outfile.close();
 }
 
 /*****************************************************************************/
@@ -98,7 +104,7 @@ int main(int argc, char *argv[]) {
 
     /// Number of events to be produced
     int n_events = atoi(argv[1]);
-    pythia->readString((string)TString::Format("Main:NumberOfEvents = %i", n_events));
+    pythia->readString("Main:NumberOfEvents = 10000000");
 
     /// QCD scale definition
     qbh->setQscale(true); /// Definition of QCD scale for PDFs false(= QBH mass), true (= inverse gravitational radius) (Default = true)
@@ -106,9 +112,6 @@ int main(int argc, char *argv[]) {
     /// Yoshino-Rychkov stuff
     qbh->setYRform(false); /// Use YR-factors (Default = false)
     qbh->setTrap(false); /// User YR trapped surface calculation (Default = false)
-
-    /// RS or ADD black hole
-    qbh->setRS1(true); /// false (= ADD black hole), true (= Randall-Sundrum type-1 black hole) (Default = false)
 
     /// SM symmetries
     qbh->setSM(false); /// Conserve global symmetries (Default = true)
@@ -129,10 +132,13 @@ int main(int argc, char *argv[]) {
     qbh->setTotdim(4 + atoi(argv[2])); /// Total number of spacetime dimensions 5-11 allowed (Default = 10)
 
     /// Planck scale definition
+    /// RS or ADD black hole
     if (strcmp(argv[4], (char*)"RS") == 0) {
         qbh->setPlanckdef(1); /// Definition of the planck scale 1 (= Randall-Sundrum), 2 (= Dimopoulos-Landsberg), 3 (= PDG), else (= Giddings-Thomas definition) (Default = 3)
+        qbh->setRS1(false); /// false (= ADD black hole), true (= Randall-Sundrum type-1 black hole) (Default = false)
     } else if (strcmp(argv[4], (char*)"PDG") == 0) {
         qbh->setPlanckdef(3);
+        qbh->setRS1(false);
     } else {
         std::cerr << "The value for the <RS_or_PDG> parameter is unknown!" << std::endl;
         std::cerr << "The allowed values are 'RS' and 'PDG'" << std::endl;
@@ -234,11 +240,11 @@ int main(int argc, char *argv[]) {
                     HistClass::Fill("phi_qbh", qbh_vec->Phi(), 1);
                 }
                 HistClass::Fill("mass_qbh", qbh_vec->M(), 1);
-            } else {
-                continue;
+
+                if (OUTPUT) (void)lhaPtr->eventLHEF(false);
             }
 
-            if (OUTPUT) (void)lhaPtr->eventLHEF(false);
+            if (sel_events == n_events)break;
         } /// End of event loop.
     }
 
