@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     pythia->readString("Main:NumberOfEvents = 10000000");
 
     /// QCD scale definition
-    qbh->setQscale(true); /// Definition of QCD scale for PDFs false(= QBH mass), true (= inverse gravitational radius) (Default = true)
+    qbh->setQscale(false); /// Definition of QCD scale for PDFs false(= QBH mass), true (= inverse gravitational radius) (Default = true)
 
     /// Yoshino-Rychkov stuff
     qbh->setYRform(false); /// Use YR-factors (Default = false)
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
     /// RS or ADD black hole
     if (strcmp(argv[4], (char*)"RS") == 0) {
         qbh->setPlanckdef(1); /// Definition of the planck scale 1 (= Randall-Sundrum), 2 (= Dimopoulos-Landsberg), 3 (= PDG), else (= Giddings-Thomas definition) (Default = 3)
-        qbh->setRS1(false); /// false (= ADD black hole), true (= Randall-Sundrum type-1 black hole) (Default = false)
+        qbh->setRS1(true); /// false (= ADD black hole), true (= Randall-Sundrum type-1 black hole) (Default = false)
     } else if (strcmp(argv[4], (char*)"PDG") == 0) {
         qbh->setPlanckdef(3);
         qbh->setRS1(false);
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
     qbh->setQstate(0); /// Three time electric charge [-4,-3,-2,-1,0,1,2,3,4] allowed, 9 for all partons (Default = 9)
 
     /// Initial state
-    qbh->setIstate(0); /// Initial state 0 (q-q), 1 (q-g), 2 (g-g), 3 (all) (Default = 3)
+    qbh->setIstate(2); /// Initial state 0 (q-q), 1 (q-g), 2 (g-g), 3 (all) (Default = 3)
 
     /// Min QBH mass
     qbh->setMinmass(threshold_mass); /// Minimum quantum black hole mass (Default = 1000)
